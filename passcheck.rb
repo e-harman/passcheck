@@ -6,12 +6,10 @@ def get_user_password
   puts "Welcome to the password strength checking program."
   print "Enter password: "
   password = gets.chomp
-  chars = password.split ""
-  return chars
+  return password
 end
 
 def count_character_types(chars)
-
   for i in 0..chars.length-1
     case chars[i]
       when ('a'..'z') then is_lower = true
@@ -28,25 +26,55 @@ def count_character_types(chars)
   char_types +=1 if is_digit == true
   char_types +=1 if is_special == true
   return char_types
-
 end
 
 def check_for_space(chars)
   for i in 0..chars.length-1
-    case chars[i]
-      when (' ') then is_space = true
+    if chars[i] == ' ' then 
+      is_space = true
+      #break #Doesn't work since in only breaks me out of the most internal loop
     end
   end
   return is_space
 end
 
-def check_if_common(chars) #Hmm, this works on password, not chars
+def check_if_common(password)
+  #Check to see if password among the 25 most common ********************
+  common_passwords = %w[123456 password 12345 12345678 qwerty 123456789 
+  1234 baseball dragon football 1234567 monkey letmein abc123 111111 
+  mustang access shadow master michael superman 696969 123123 batman trustno1]
+  
+  downcased_password = password.downcase
+  
+  is_common = false
+  common_passwords.each { |common_password|
+      if downcased_password == common_password then
+          is_common = true
+          break
+      end
+  }
+  return is_common
 end
 
-def check_if_dictionary(chars) #Hmm, this works on password, not chars
+def check_if_dictionary(password)
+# Check to see if password CONTAINS a dictionary word *******************
+  downcased_password = password.downcase
+  is_dictionary = false
+  File.foreach("dictionary.txt") do |word|
+      word.chomp!
+      if word.length >3
+          if downcased_password.include? word
+            is_dictionary = true
+              #puts "***WARNING: Your password contains an English word; it may be susceptible to a dictionary attack."
+              puts "  Found \"#{word}\" in your password"
+              break
+          end
+      end
+  end
+  return is_dictionary
 end
 
-def compute_score(chars, char_types, is_space)
+def compute_score(chars, char_types, is_space, is_common, is_dictionary)
   if chars.length > 100
     length_score = 25
   else
@@ -57,46 +85,27 @@ def compute_score(chars, char_types, is_space)
   pass_score = length_score * char_types
   puts "Your overall password score is: #{pass_score}/100"
   puts "***WARNING: Your password contains one or more spaces, which are invalid on some systems" if is_space == true
+  puts "***WARNING: Your password is among the most common 25 passwords; it's highly insecure." if is_common == true
+  puts "***WARNING: Your password contains an English word; it may be susceptible to a dictionary attack." if is_dictionary == true
 end
 
 # *******************
 
-chars = get_user_password
+password = get_user_password
+
+chars = password.split ""
 
 char_types = count_character_types(chars)
 
 is_space = check_for_space(chars)
 
-compute_score(chars, char_types, is_space)
+is_common = check_if_common(password)
+
+is_dictionary = check_if_dictionary(password)
+
+compute_score(chars, char_types, is_space, is_common, is_dictionary)
 
 # ***************************************************************************
 # Below here not converted yet
 
-# Check to see if password among the 25 most common ********************
-# common_passwords = %w[123456 password 12345 12345678 qwerty 123456789 
-# 1234 baseball dragon football 1234567 monkey letmein abc123 111111 
-# mustang access shadow master michael superman 696969 123123 batman trustno1]
 
-# downcased_password = password.downcase
-
-# common_passwords.each { |common_password|
-#     if downcased_password == common_password then
-#         is_common = true
-#         break
-#     end
-# }
-
-# puts "***WARNING: Your password is among the most common 25 passwords; it's highly insecure." if is_common == true
-
-
-# Check to see if password CONTAINS a dictionary word *******************
-# File.foreach("dictionary.txt") do |word|
-#     word.chomp!
-#     if word.length >3
-#         if downcased_password.include? word
-#             puts "***WARNING: Your password contains an English word; it may be susceptible to a dictionary attack."
-#             puts "  Found \"#{word}\" in your password"
-#             break
-#         end
-#     end
-# end
