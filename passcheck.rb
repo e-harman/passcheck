@@ -2,56 +2,72 @@
 # Eric Harman
 # Created:  11/12/2015
 
-# char_types = 0
-# is_lower = false
-# is_upper = false
-# is_digit = false
-# is_special = false
-# is_space = false
-# is_common = false
+def get_user_password
+  puts "Welcome to the password strength checking program."
+  print "Enter password: "
+  password = gets.chomp
+  chars = password.split ""
+  return chars
+end
 
-# common_passwords = %w[123456 password 12345 12345678 qwerty 123456789 
-# 1234 baseball dragon football 1234567 monkey letmein abc123 111111 
-# mustang access shadow master michael superman 696969 123123 batman trustno1]
+def count_character_types(chars)
 
-# puts "Welcome to the password strength checking program."
-# print "Enter password: "
+  for i in 0..chars.length-1
+    case chars[i]
+      when ('a'..'z') then is_lower = true
+      when ('A'..'Z') then is_upper = true
+      when ('0'..'9') then is_digit = true
+      when (/[^0-9A-Za-z]/) then is_special = true
+      #when (' ') then is_space = true
+      else puts "Unknown character type encountered"
+    end
+  end
+  char_types = 0
+  char_types +=1 if is_lower == true
+  char_types +=1 if is_upper == true
+  char_types +=1 if is_digit == true
+  char_types +=1 if is_special == true
+  return char_types
 
-# password = gets.chomp
-# chars = password.split ""
+end
 
-# for i in 0..chars.length-1
-#     case chars[i]
-#         when ('a'..'z') then is_lower = true
-#         when ('A'..'Z') then is_upper = true
-#         when ('0'..'9') then is_digit = true
-#         when (/[^0-9A-Za-z]/) then is_special = true
-#         when (' ') then is_space = true
-#         else puts "Unknown character type encountered"
-#     end
-# end
+def check_for_space(chars)
+  for i in 0..chars.length-1
+    case chars[i]
+      when (' ') then is_space = true
+    end
+  end
+  return is_space
+end
 
-# char_types +=1 if is_lower == true
-# char_types +=1 if is_upper == true
-# char_types +=1 if is_digit == true
-# char_types +=1 if is_special == true
+def check_if_common(chars) #Hmm, this works on password, not chars
+end
 
+def check_if_dictionary(chars) #Hmm, this works on password, not chars
+end
 
-# Compute password score **********************************
-# if chars.length > 100
-#     length_score = 25
-# else
-#     length_score = chars.length/4
-# end
+def compute_score(chars, char_types, is_space)
+  if chars.length > 100
+    length_score = 25
+  else
+    length_score = chars.length/4.to_f
+  end
+  puts "\nThe length of your password is: #{chars.length} character(s)"
+  puts "Your password contains #{char_types} character type(s) out of 4"
+  pass_score = length_score * char_types
+  puts "Your overall password score is: #{pass_score}/100"
+  puts "***WARNING: Your password contains one or more spaces, which are invalid on some systems" if is_space == true
+end
 
-#pass_score = length_score * char_types
+# *******************
 
+chars = get_user_password
 
-# puts "\nThe length of your password is: #{chars.length} character(s)"
-# puts "Your password contains #{char_types} character type(s) out of 4"
-# puts "Your overall password score is: #{pass_score}/100"
-# puts "***WARNING: Your password contains one or more spaces, which are invalid on some systems" if is_space == true
+char_types = count_character_types(chars)
 
+is_space = check_for_space(chars)
+
+compute_score(chars, char_types, is_space)
 
 # ***************************************************************************
 # Below here not converted yet
@@ -84,75 +100,3 @@
 #         end
 #     end
 # end
-
-# ***************************************************************************
-# The new way of doing things 
-
-# Methods *****************************************************************
-
-def get_user_password
-  puts "Welcome to the password strength checking program."
-  print "Enter password: "
-  password = gets.chomp
-  chars = password.split ""
-  return chars
-end
-
-def count_character_types
-
-  for i in 0..chars.length-1
-    case chars[i]
-      when ('a'..'z') then is_lower = true
-      when ('A'..'Z') then is_upper = true
-      when ('0'..'9') then is_digit = true
-      when (/[^0-9A-Za-z]/) then is_special = true
-      when (' ') then is_space = true
-      else puts "Unknown character type encountered"
-    end
-  end
-
-  char_types +=1 if is_lower == true
-  char_types +=1 if is_upper == true
-  char_types +=1 if is_digit == true
-  char_types +=1 if is_special == true
-  return char_types
-
-end
-
-def check_if_common
-end
-
-def check_if_dictionary
-end
-
-def compute_score(chars)
-  if chars.length > 100
-    length_score = 25
-  else
-    length_score = chars.length/4
-  end
-  puts "\nThe length of your password is: #{chars.length} character(s)"
-  #puts "Your password contains #{char_types} character type(s) out of 4"
-  #puts "Your overall password score is: #{pass_score}/100"
-  #puts "***WARNING: Your password contains one or more spaces, which are invalid on some systems" if is_space == true
-  #return score
-  puts "The score is: #{length_score}"
-end
-
-# *******************
-
-char_types = 0
-is_lower = false
-is_upper = false
-is_digit = false
-is_special = false
-is_space = false
-is_common = false
-
-common_passwords = %w[123456 password 12345 12345678 qwerty 123456789 
-1234 baseball dragon football 1234567 monkey letmein abc123 111111 
-mustang access shadow master michael superman 696969 123123 batman trustno1]
-
-chars = get_user_password
-
-compute_score(chars)
