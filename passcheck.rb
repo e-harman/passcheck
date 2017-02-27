@@ -32,14 +32,14 @@ def check_for_space(chars)
   for i in 0..chars.length-1
     if chars[i] == ' ' then 
       is_space = true
-      #break #Doesn't work since in only breaks me out of the most internal loop
+      return is_space
     end
   end
   return is_space
 end
 
 def check_if_common(password)
-  #Check to see if password among the 25 most common ********************
+  # Check to see if password among the 25 most common ********************
   common_passwords = %w[123456 password 12345 12345678 qwerty 123456789 
   1234 baseball dragon football 1234567 monkey letmein abc123 111111 
   mustang access shadow master michael superman 696969 123123 batman trustno1]
@@ -48,16 +48,16 @@ def check_if_common(password)
   
   is_common = false
   common_passwords.each { |common_password|
-      if downcased_password == common_password then
-          is_common = true
-          break
-      end
+    if downcased_password == common_password then
+      is_common = true
+      break
+    end
   }
   return is_common
 end
 
 def check_if_dictionary(password)
-# Check to see if password CONTAINS a dictionary word *******************
+  # Check to see if password CONTAINS a dictionary word *******************
   downcased_password = password.downcase
   is_dictionary = false
   File.foreach("dictionary.txt") do |word|
@@ -104,8 +104,3 @@ is_common = check_if_common(password)
 is_dictionary = check_if_dictionary(password)
 
 compute_score(chars, char_types, is_space, is_common, is_dictionary)
-
-# ***************************************************************************
-# Below here not converted yet
-
-
